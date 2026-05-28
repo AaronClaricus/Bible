@@ -6,14 +6,75 @@
     <link rel="icon" type="image/x-icon" href="./Code/favicon.ico">
     <title>The Holy Bible in English, Greek, Latin and Arabic</title>
     <link rel="stylesheet" href="./Code/style25.css">
+    <link rel="stylesheet" href="./Code/stylesearch.css">
+    <style>
+.file-link{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    color:inherit;
+    padding:2px;
+    cursor:pointer;
+    word-break:break-word;
+}
+
+#fontSelector {
+  height:32px;
+
+    padding:0 14px;
+    margin-left:8px;
+
+    font-size:13px;
+    font-weight:bold;
+    font-family:Arial, sans-serif;
+
+    color:white;
+
+    background:linear-gradient(to bottom,#777,#444);
+
+    border:none;
+    border-radius:8px;
+width:215px;
+    cursor:pointer;
+
+    box-shadow:0 2px 6px rgba(0,0,0,0.35);}
+    #highlightSelector {
+  height:32px;
+
+    padding:0 14px;
+    margin-left:8px;
+
+    font-size:13px;
+    font-weight:bold;
+    font-family:Arial, sans-serif;
+
+    color:white;
+
+    background:linear-gradient(to bottom,#777,#444);
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+width:215px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.35);}
+    </style>
 </head>
 
 <body class="four-panel">
     <div id="main">
-
+		
         <!-- NAVIGATION (outside table now) -->
         <aside id="navA" class="nav-column">
             <div class="nav-controls">
+				<button id="toggleSearch">
+					Hide Search
+				</button>
+				<button id="toggleGo">
+					Hide Go
+				</button>
                 <select id="fontSelector">
                     <option value="12px" selected>12px</option>
                     <option value="14px">14px</option>
@@ -44,31 +105,46 @@
         <!-- 4 IFRAME LAYOUT -->
         <table id="layouttable">
             <tr>
-                <td class="left-item">
-                    <div class="iframe-title" id="titleB">A</div>
+                <td class="left-item"><div class="search-row">
+					
+				<input id="search" type="text" placeholder="Search text..."><span id="countB">0/0</span>
+					<input id="go" type="button" value="Go">
+</div>
+                    <div class="iframe-title" id="titleB">A </div>
                     <iframe id="frameB"></iframe>
                 </td>
 
-                <td class="center-col2">
+                <td class="center-col2"><div class="search-row">
+					<input id="searchC" type="text" placeholder="Search C"><span id="countC">0/0</span>
+<input id="goC" type="button" value="Go"></div>
                     <div class="iframe-title" id="titleC">B</div>
                     <iframe id="frameC"></iframe>
                 </td>
 
-                <td class="center-col">
+                <td class="center-col"><div class="search-row">
+					<input id="searchD" type="text" placeholder="Search D"><span id="countD">0/0</span>
+<input id="goD" type="button" value="Go"></div>
                     <div class="iframe-title" id="titleD">C</div>
                     <iframe id="frameD"></iframe>
                 </td>
 
-                <td class="right-item">
+                <td class="right-item"><div class="search-row">
+					<input id="searchE" type="text" placeholder="Search E"><span id="countE">0/0</span>
+<input id="goE" type="button" value="Go"></div>
                     <div class="iframe-title" id="titleE">D</div>
                     <iframe id="frameE"></iframe>
                 </td>
+                
             </tr>
         </table>
 
     </div>
 </body>
+<script>
 
+
+</script>
+<script src="./Code/search2.js"></script>
 <script src="./Code/highlight16.js"></script>
 <script src="./Code/buildhtml.js"></script>
 <script src="./Code/buildhtmlrender24.js"></script>
@@ -76,4 +152,6 @@
 <script src="./Code/fontsize16.js"></script>
 <script src="./Code/nav14.js"></script>
 <script src="./Code/toggle25.js"></script>
+<style>
+</style>
 </html>
