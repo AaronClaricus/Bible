@@ -5,167 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="./Code/favicon.ico">
     <title>The Holy Bible in English, Greek, Latin and Arabic</title>
-    <link rel="stylesheet" href="./Code/style25.css">
-    <link rel="stylesheet" href="./Code/stylesearch.css">
+    <link rel="stylesheet" href="./Code/basis/style26.css">
+    
     <style>
-.file-link{
-    display:block;
-    width:100%;
-    text-align:left;
-    background:none;
-    border:none;
-    color:inherit;
-    padding:2px;
-    cursor:pointer;
-    word-break:break-word;
-}
-
-#fontSelector {
-  height:32px;
-
-    padding:0 14px;
-    margin-left:8px;
+select{
+    height:32px;
+    padding:0 10px;
+    margin:6px;
 
     font-size:13px;
-    font-weight:bold;
     font-family:Arial, sans-serif;
 
-    color:white;
+    color:#000;
+    background:#E6E6E6;
 
-    background:linear-gradient(to bottom,#777,#444);
-
-    border:none;
-    border-radius:8px;
-width:215px;
-    cursor:pointer;
-
-    box-shadow:0 2px 6px rgba(0,0,0,0.35);}
-    #highlightSelector {
-  height:32px;
-
-    padding:0 14px;
-    margin-left:8px;
-
-    font-size:13px;
-    font-weight:bold;
-    font-family:Arial, sans-serif;
-
-    color:white;
-
-    background:linear-gradient(to bottom,#777,#444);
-
-    border:none;
+    border:1px solid #444;
     border-radius:8px;
 
-    cursor:pointer;
-width:215px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.35);}
-    #toggleInfo{
-    height:32px;
-
-    padding:0 14px;
-    margin-left:8px;
-
-    font-size:13px;
-    font-weight:bold;
-    font-family:Arial,sans-serif;
-
-    color:white;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #666,
-            #444
-        );
-
-    border:none;
-    border-radius:8px;
-
+    outline:none;
     cursor:pointer;
 
-    box-shadow:
-        0 2px 6px rgba(0,0,0,0.35);
-
-    transition:
-        transform 0.08s ease,
-        filter 0.2s ease,
-        box-shadow 0.2s ease;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
 }
-
-#toggleInfo:hover{
-    filter:brightness(1.08);
-
-    box-shadow:
-        0 3px 8px rgba(0,0,0,0.45);
+option{
+    color:#000;
+    background:#FFFFFF;
 }
-
-#toggleInfo:active{
-    transform:scale(0.96);
+select option:checked,
+select option:hover{
+    background:#CFCFCF;
+    color:#000;
 }
-
-/* hidden state */
-.hidden-info{
-    display:none !important;
-}
-.hidden-controls{
-    display:none !important;
-}
-
-/* =========================================
-   TOGGLE CONTROLS BUTTON
-========================================= */
-#toggleControls{
-    height:32px;
-
-    padding:0 14px;
-	margin:10px;
-    margin-left:8px;
-width:215px;
-    font-size:13px;
-    font-weight:bold;
-    font-family:Arial,sans-serif;
-
-    color:white;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #666,
-            #444
-        );
-
-    border:none;
-    border-radius:8px;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 2px 6px rgba(0,0,0,0.35);
-
-    transition:
-        transform 0.08s ease,
-        filter 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-#toggleControls:hover{
-    filter:brightness(1.08);
-
-    box-shadow:
-        0 3px 8px rgba(0,0,0,0.45);
-}
-
-#toggleControls:active{
-    transform:scale(0.96);
-}
-
-/* =========================================
-   HIDDEN CONTROLS
-========================================= */
-.hidden-controls{
-    display:none !important;
-
     </style>
 </head>
 
@@ -220,14 +92,14 @@ width:215px;
 					<input id="go" type="button" value="Go">
 </div>
                     <div class="iframe-title" id="titleB">A </div>
-                    <iframe id="frameB"></iframe>
+                      <iframe id="frameB"></iframe>
                 </td>
 
                 <td class="center-col2"><div class="search-row">
 					<input id="searchC" type="text" placeholder="Search C"><span id="countC">0/0</span>
 <input id="goC" type="button" value="Go"></div>
                     <div class="iframe-title" id="titleC">B</div>
-                    <iframe id="frameC"></iframe>
+                  <iframe id="frameC"></iframe>
                 </td>
 
                 <td class="center-col"><div class="search-row">
@@ -241,110 +113,27 @@ width:215px;
 					<input id="searchE" type="text" placeholder="Search E"><span id="countE">0/0</span>
 <input id="goE" type="button" value="Go"></div>
                     <div class="iframe-title" id="titleE">D</div>
-                    <iframe id="frameE"></iframe>
+                   <iframe id="frameE"></iframe>
                 </td>
                 
             </tr>
+ 
         </table>
 
     </div>
 </body>
 <script>
-// ======================================
-// TOGGLE NAV CONTROLS
-// ======================================
-
-const CONTROLS_KEY =
-    "navControlsHidden";
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        const toggleControls =
-            document.getElementById(
-                "toggleControls"
-            );
-
-        const navControls =
-            document.querySelector(
-                ".nav-controls"
-            );
-
-        if(
-            !toggleControls ||
-            !navControls
-        ){
-            return;
-        }
-
-        // ==========================
-        // RESTORE SAVED STATE
-        // ==========================
-        const hidden =
-            localStorage.getItem(
-                CONTROLS_KEY
-            ) === "true";
-
-        if(hidden){
-            navControls.style.display =
-                "none";
-
-            toggleControls.textContent =
-                "Show Controls";
-        }
-
-        // ==========================
-        // TOGGLE
-        // ==========================
-        toggleControls.addEventListener(
-            "click",
-            () => {
-
-                const isHidden =
-                    navControls.style.display ===
-                    "none";
-
-                if(isHidden){
-
-                    navControls.style.display =
-                        "flex";
-
-                    toggleControls.textContent =
-                        "Hide Controls";
-
-                    localStorage.setItem(
-                        CONTROLS_KEY,
-                        "false"
-                    );
-
-                }else{
-
-                    navControls.style.display =
-                        "none";
-
-                    toggleControls.textContent =
-                        "Show Controls";
-
-                    localStorage.setItem(
-                        CONTROLS_KEY,
-                        "true"
-                    );
-                }
-            }
-        );
-    }
-);
 
 </script>
-<script src="./Code/search2.js"></script>
-<script src="./Code/highlight16.js"></script>
-<script src="./Code/buildhtml.js"></script>
-<script src="./Code/buildhtmlrender24.js"></script>
-<script src="./Code/titleupdate14.js"></script>
-<script src="./Code/fontsize16.js"></script>
-<script src="./Code/nav14.js"></script>
-<script src="./Code/toggle25.js"></script>
+
+<script src="./Code/basis/combined.js"></script>
+<script src="./Code/basis/combined2.js"></script>
+
+
+
+
+
+
 <style>
 </style>
 </html>
