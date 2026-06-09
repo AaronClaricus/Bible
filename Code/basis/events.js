@@ -1,14 +1,17 @@
 import {
     TemplateService,
     DocumentService,
-    DocumentLoadRequest
+    DocumentSession
 } from "./documents.js";
+import {
+    DocumentLoadRequest
+} from "./document-load-request.js";
 import {
     EventBus
 } from "./event-bus.js";
 import {
     PersistenceService
-} from "./storage.js";
+} from "./documents.js";
 import {
 	AppState,
 	APP,
@@ -26,37 +29,20 @@ import {
     
     SearchService
 } from "./search.js";
-import {
-    DocumentSession
-} from "./documents.js";
+
 import {
     ConfigService,
     DocumentPipelineDebug
 } from "./config.js";
+import { EVENTS } from "./event-names.js";
+import {
+    AppStorage
+    
+} from "./storage.js";
 // ======================================
 // EVENT BUS HANDLERS
 // ======================================
-export const EVENTS = {
-    DOCUMENT_LOAD: "document:load",
-    DOCUMENT_RELOAD: "document:reload",
-    DOCUMENTS_RELOAD_ALL: "documents:reloadAll",
 
-    PIPELINE_STARTED: "pipeline:started",
-    PIPELINE_FETCHED: "pipeline:fetched",
-    PIPELINE_RENDERED: "pipeline:rendered",
-    PIPELINE_COMPLETED: "pipeline:completed",
-    PIPELINE_FAILED: "pipeline:failed",
-
-    SEARCH_RUN: "search:run",
-    SEARCH_CLEAR: "search:clear",
-    SEARCH_NEXT: "search:next",
-    SEARCH_PREVIOUS: "search:previous",
-
-    UI_RELOAD_ALL: "ui:reloadAll",
-    UI_LAYOUT_CHANGE: "ui:layoutChange",
-    UI_FONT_CHANGE: "ui:fontChange",
-    UI_HIGHLIGHT_CHANGE: "ui:highlightChange"
-};
 export function registerEventBusHandlers() {
     EventBus.on(
 		EVENTS.DOCUMENT_LOAD,

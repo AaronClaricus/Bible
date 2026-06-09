@@ -1,5 +1,5 @@
 import {
-   
+   StateManager,
 	UIState
 } from "./state.js";
 import {
@@ -7,12 +7,12 @@ import {
     FrameService
 } from "./rendering.js";
 import {
+    AppStorage
+} from "./storage.js";
+import {
     EventBus
 } from "./event-bus.js";
-import {
-    
-    EVENTS
-} from "./events.js";
+import { EVENTS } from "./event-names.js";
 import {
     DocumentSession
 } from "./documents.js";

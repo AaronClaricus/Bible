@@ -7,12 +7,8 @@ import {
 import {
     EventBus
 } from "./event-bus.js";
-import {
-    EVENTS
-} from "./events.js";
-import {
-    PersistenceService
-} from "./storage.js";
+import { EVENTS } from "./event-names.js";
+
 import {
   
     UIService
@@ -29,9 +25,34 @@ import {
     ConfigService,
     DocumentPipelineDebug
 } from "./config.js";
+import {
+    DocumentLoadRequest
+} from "./document-load-request.js";
+import {
+    AppStorage
+    
+} from "./storage.js";
 // ======================================
 // DOCUMENT LOAD PIPELINE
 // ======================================
+export const PersistenceService = {
+    saveLastOpened(
+        frameId,
+        file
+    ) {
+        AppStorage.lastOpened.setFile(
+            frameId,
+            file
+        );
+        const current =
+            AppState.getLastOpened() || {};
+        current[frameId] =
+            file;
+        AppState.setLastOpened(
+            current
+        );
+    }
+};
 const StatusUIService = {
 
     getElement(frameId) {
@@ -166,39 +187,7 @@ const DocumentPipelineEvents = {
         );
     }
 };
-export const DocumentLoadRequest = {
 
-    create(frameId, file, options = {}) {
-        return {
-            frameId,
-            file,
-            source: options.source || "unknown",
-            restoreScroll: options.restoreScroll !== false,
-            resetSearch: options.resetSearch !== false,
-            timestamp: Date.now()
-        };
-    },
-
-    fromPayload(payload = {}) {
-        return this.create(
-            payload.frameId,
-            payload.file,
-            {
-                source: payload.source,
-                restoreScroll: payload.restoreScroll,
-                resetSearch: payload.resetSearch
-            }
-        );
-    },
-
-    isValid(request) {
-        return !!(
-            request &&
-            request.frameId &&
-            request.file
-        );
-    }
-};
 
 
 const DocumentPipeline = {
