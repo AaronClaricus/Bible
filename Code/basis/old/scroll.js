@@ -1,23 +1,5 @@
-import {
-    FrameRegistry
-} from "./rendering.js";
-import {
- 
-    DocumentService
-} from "./documents.js";
-import {
-    AppStorage
-} from "./storage.js";
-import {
-    FrameService
-} from "./rendering.js";
-import {
-   
-    SCROLL_STORE_KEY
-} from "./constants.js";
-import {
-    ConfigService,
-} from "./config.js";
+
+
 const ScrollService = {
     load() {
         return AppStorage.scroll.load();
@@ -71,14 +53,11 @@ const ScrollService = {
                 scrollY
             );
         },
-        ConfigService.get(
-			"config.search.scrollOffset",
-			120
-		));
+        CONFIG.scroll.restoreDelay);
     },
     attach(frameId) {
         const iframe =
-            FrameRegistry.get(frameId);
+            document.getElementById(frameId);
         if (!iframe) {
             return;
         }
@@ -119,7 +98,7 @@ const ScrollService = {
                             );
                         if (
                             entries.length >
-                            ConfigService.get("config.scroll.maxHistory", 50)
+                            CONFIG.scroll.maxHistory
                         ) {
                             entries.sort(
                                 (a, b) =>
@@ -130,13 +109,13 @@ const ScrollService = {
                                 Object.fromEntries(
                                     entries.slice(
                                         0,
-                                        ConfigService.get("config.scroll.maxHistory", 50)
+                                        CONFIG.scroll.maxHistory
                                     )
                                 );
                         }
                         this.save(store);
                     },
-                    ConfigService.get("config.scroll.debounce", 250));
+                    CONFIG.scroll.debounce);
             };
             this.restore(
                 frameId,
@@ -153,11 +132,11 @@ const ScrollService = {
 };
 
 
-export const ScrollTrackingService = {
+const ScrollTrackingService = {
 
     init() {
 
-        ConfigService.getFrames().forEach(
+        FRAMES.forEach(
             frame => {
 
                 ScrollService.attach(

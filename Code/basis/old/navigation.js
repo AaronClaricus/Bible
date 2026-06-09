@@ -1,12 +1,3 @@
-import {
-    NAVIGATION,
-    
-} from "./Navigationlist.js";
-import {
-    ConfigService,
-   
-} from "./config.js";
-import { DOM } from "./dom.js";
 const NavigationModel = {
     structure: NAVIGATION,
     getStructure() {
@@ -16,7 +7,7 @@ const NavigationModel = {
 
 function buildNavigation(containerId, data){
     const container =
-        DOM.get(containerId);
+        document.getElementById(containerId);
     const ul = document.createElement("ul");
     data.forEach(node => {
         ul.appendChild(
@@ -38,7 +29,7 @@ function createTree(node){
         li.appendChild(button);
         const nested = document.createElement("ul");
         nested.className = "nested";
-		ConfigService.getFrames().forEach(frame => {
+		FRAMES.forEach(frame => {
 			const frameLi =
 				document.createElement("li");
 			// ==============================
@@ -98,7 +89,7 @@ function createTree(node){
     return li;
 }
 
-export const NavigationService = {
+const NavigationService = {
 	buildNavigation() {
 		buildNavigation(
 			"navA",

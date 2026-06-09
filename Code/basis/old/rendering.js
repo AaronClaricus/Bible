@@ -1,21 +1,4 @@
-import {
-	APP,
-	UIState
-	
-} from "./state.js";
-import {
-    EventBus
-} from "./event-bus.js";
-import {
-    
-    EVENTS
-} from "./events.js";
-import {
-    DocumentSession
-} from "./documents.js";
-import {
-    ConfigService
-} from "./config.js";
+
 // ======================================
 // HTML RENDERER
 // ======================================
@@ -46,9 +29,9 @@ const HTMLRenderer = {
                 `;
         return template
             .replaceAll(
-				"__FONT_SIZE__",
-				`${UIState.getFontSize()}px`
-			)
+                "__FONT_SIZE__",
+                size
+            )
             .replaceAll(
                 "__HIGHLIGHT_BG__",
                 scheme.bg
@@ -69,23 +52,7 @@ const HTMLRenderer = {
             .replace(/>/g, "&gt;");
     }
 };
-export const FrameRegistry = {
-
-    get(frameId) {
-        return document.getElementById(frameId);
-    },
-
-    exists(frameId) {
-        return !!this.get(frameId);
-    },
-
-    getAll() {
-		return ConfigService.getFrames()
-			.map(frame => this.get(frame[0]))
-			.filter(Boolean);
-	}
-};
-export const FrameService = {
+const FrameService = {
     render(iframe, text, scheme) {
         console.log("[RENDER CHECK]", {
             hasTemplate: !!APP.state.templateHTML,
@@ -115,7 +82,7 @@ export const FrameService = {
     ) {
         const titleBar =
             document.getElementById(
-                ConfigService.getFrameTitles()[frameId] || frameId
+                FRAME_TITLES[frameId]
             );
         if(!titleBar){
             return;
@@ -131,7 +98,7 @@ export const FrameService = {
         titleBar.textContent =
             fileName;
     },
-	reloadAll() {
-		EventBus.emit(EVENTS.DOCUMENTS_RELOAD_ALL);
-	}
+	 reloadAll() {
+        return DocumentService.reloadAll();
+    }
 };

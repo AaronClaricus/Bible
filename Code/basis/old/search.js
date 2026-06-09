@@ -1,138 +1,28 @@
-import {
-    FrameRegistry
-} from "./rendering.js";
-import { DOM } from "./dom.js";
+
+
 const SearchEngine = {
     findMatches(doc, term) {
         const escaped = term.replace(/[.*?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
         const textNodes = [];
-        SearchHighlighter.collectTextNodes(
-			doc.body,
-			textNodes,
-			regex
-		);
+        collectTextNodes(doc.body, textNodes, regex);
         return textNodes;
     }
 };
 const SearchHighlighter = {
     apply(doc, regex) {
-        this.clear(doc);
-
-        this.highlightText(
-            doc.body,
-            regex,
-            doc
-        );
-
-        return [
-            ...doc.querySelectorAll("mark")
-        ];
+        removeHighlights(doc);
+        highlightText(doc.body, regex, doc);
+        return [...doc.querySelectorAll("mark")];
     },
-
     clear(doc) {
-        const marks =
-            doc.querySelectorAll("mark");
-
-        marks.forEach(mark => {
-            const parent =
-                mark.parentNode;
-
-            parent.replaceChild(
-                doc.createTextNode(
-                    mark.textContent
-                ),
-                mark
-            );
-
-            parent.normalize();
-        });
-    },
-	collectTextNodes(node, textNodes, regex) {
-		if (node.nodeType === 3) {
-			regex.lastIndex = 0;
-
-			if (regex.test(node.textContent)) {
-				textNodes.push(node);
-			}
-
-			return;
-		}
-
-		if (node.nodeType === 1) {
-			if (
-				node.tagName === "SCRIPT" ||
-				node.tagName === "STYLE" ||
-				node.tagName === "MARK"
-			) {
-				return;
-			}
-
-			[...node.childNodes].forEach(child =>
-				this.collectTextNodes(
-					child,
-					textNodes,
-					regex
-				)
-			);
-		}
-	},
-    highlightText(node, regex, doc) {
-        if (node.nodeType === 3) {
-            const text =
-                node.textContent;
-
-            regex.lastIndex = 0;
-
-            if (regex.test(text)) {
-                regex.lastIndex = 0;
-
-                const span =
-                    doc.createElement("span");
-
-                span.innerHTML =
-                    text.replace(
-                        regex,
-                        match =>
-                            `<mark>${match}</mark>`
-                    );
-
-                node.parentNode.replaceChild(
-                    span,
-                    node
-                );
-            }
-
-            return;
-        }
-
-        if (node.nodeType === 1) {
-            const tag =
-                node.tagName;
-
-            if (
-                tag === "SCRIPT" ||
-                tag === "STYLE" ||
-                tag === "MARK"
-            ) {
-                return;
-            }
-
-            [...node.childNodes].forEach(
-                child =>
-                    this.highlightText(
-                        child,
-                        regex,
-                        doc
-                    )
-            );
-        }
+        removeHighlights(doc);
     }
 };
 // ======================================
 // SEARCH SERVICE
 // ======================================
-export const SearchService = {
+const SearchService = {
     query(
         iframe,
         term
@@ -236,10 +126,7 @@ const SearchController = {
                 top:
                     win.scrollY +
                     rect.top -
-                    ConfigService.get(
-    "config.search.scrollOffset",
-    120
-),
+                    CONFIG.search.scrollOffset,
                 behavior: "auto"
             });
         }
@@ -267,24 +154,6 @@ const SearchController = {
             );
             updateCounter();
         }
-		 function previousMatch() {
-			if (!state.matches.length) {
-				updateCounter();
-				return;
-			}
-
-			state.index--;
-
-			if (state.index < 0) {
-				state.index = state.matches.length - 1;
-			}
-
-			scrollToMatch(
-				state.matches[state.index]
-			);
-
-			updateCounter();
-		}
         function runSearch() {
             const term =
                 input.value.trim();
@@ -303,39 +172,16 @@ const SearchController = {
             runSearch
         );
         input.addEventListener(
-			"keydown",
-			e => {
-				if (e.key === "Enter") {
-					e.preventDefault();
-					e.stopPropagation();
-
-					const term = input.value.trim();
-
-					if (!term) {
-						return;
-					}
-
-					if (state.lastTerm !== term) {
-						resetSearch(term);
-					}
-
-					if (e.shiftKey) {
-						previousMatch();
-					}
-					else {
-						advanceMatch();
-					}
-				}
-
-				if (e.key === "Escape") {
-					e.preventDefault();
-					input.blur();
-				}
-			}
-		);
+            "keydown",
+            e => {
+                if (e.key === "Enter") {
+                    runSearch();
+                }
+            }
+        );
     }
 };
-export const SearchBindingsService = {
+const SearchBindingsService = {
 
     init() {
 
@@ -348,13 +194,76 @@ export const SearchBindingsService = {
             ([inputId, buttonId, frameId, counterId]) => {
 
                 SearchController.create({
-                    input: DOM.get(inputId),
-                    button: DOM.get(buttonId),
-                    iframe: FrameRegistry.get(frameId),
-                    counter: DOM.get(counterId)
+                    input: document.getElementById(inputId),
+                    button: document.getElementById(buttonId),
+                    iframe: document.getElementById(frameId),
+                    counter: document.getElementById(counterId)
                 });
 
             }
         );
     }
 };
+// ======================================
+// REMOVE OLD HIGHLIGHTS
+// ======================================
+function removeHighlights(doc){
+    const marks =
+        doc.querySelectorAll("mark");
+    marks.forEach(mark => {
+        const parent =
+            mark.parentNode;
+        parent.replaceChild(
+            doc.createTextNode(
+                mark.textContent
+            ),
+            mark
+        );
+        parent.normalize();
+    });
+}
+// ======================================
+// HIGHLIGHT TEXT
+// ======================================
+function highlightText(node, regex, doc){
+    // TEXT NODE
+    if(node.nodeType === 3){
+        const text =
+            node.textContent;
+        if(regex.test(text)){
+            const span =
+                doc.createElement("span");
+            span.innerHTML =
+                text.replace(
+                    regex,
+                    match =>
+                        `<mark>${match}</mark>`
+                );
+            node.parentNode.replaceChild(
+                span,
+                node
+            );
+        }
+        return;
+    }
+    // ELEMENT NODE
+    if(node.nodeType === 1){
+        const tag =
+            node.tagName;
+        if(
+            tag === "SCRIPT" ||
+            tag === "STYLE"  ||
+            tag === "MARK"
+        ){
+            return;
+        }
+        [...node.childNodes].forEach(
+            child =>
+                highlightText(
+                    child,
+                    regex,
+                    doc
+                )
+        );
+    }
+}

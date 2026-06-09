@@ -1,11 +1,4 @@
-import {
-	UIState
-} from "./state.js";
-import {
-    ConfigService,
-} from "./config.js";
-import { DOM } from "./dom.js";
-export const KeyboardShortcutService = {
+const KeyboardShortcutService = {
     activeFrameId: "frameB",
 
     init() {
@@ -23,8 +16,8 @@ export const KeyboardShortcutService = {
     },
 
     bindIframeFocus() {
-        ConfigService.getFrames().forEach(([frameId]) => {
-            const iframe = DOM.get(frameId);
+        FRAMES.forEach(([frameId]) => {
+            const iframe = document.getElementById(frameId);
 
             if (!iframe) {
                 return;
@@ -172,7 +165,7 @@ export const KeyboardShortcutService = {
             frameE: "searchE"
         };
 
-        return DOM.get(
+        return document.getElementById(
             map[this.activeFrameId] || "search"
         );
     },
@@ -185,7 +178,7 @@ export const KeyboardShortcutService = {
             frameE: "goE"
         };
 
-        return DOM.get(
+        return document.getElementById(
             map[this.activeFrameId] || "go"
         );
     },

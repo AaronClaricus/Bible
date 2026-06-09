@@ -1,17 +1,7 @@
-import {
-    StateManager,
-	APP,
-	AppState
-} from "./state.js";
-import {
-    LAST_OPENED_KEY,
-    SCROLL_STORE_KEY
-} from "./constants.js";
-
 // ======================================
 // STORAGE SYSTEM
 // ======================================
-export const AppStorage = {
+const AppStorage = {
 	// ==============================
 	// GENERIC GET
 	// ==============================
@@ -146,7 +136,7 @@ export const AppStorage = {
 		}
 	}
 };
-export const PersistenceService = {
+const PersistenceService = {
     saveLastOpened(
         frameId,
         file

@@ -1,16 +1,9 @@
-import {
-    AppStorage
-} from "./storage.js";
-import {
-    LayoutService,
-	FontService,
-	HighlightService,
-	VisibilityService
-} from "./ui.js";
-import {
-    LAST_OPENED_KEY
-} from "./constants.js";
-export const APP = {
+// ======================================
+// APP STATE
+// ======================================
+
+
+const APP = {
     state: {
         app: {
             currentFiles: {},
@@ -18,7 +11,7 @@ export const APP = {
         },
         ui: {
             layoutMode: "four",
-            fontSize: 18,
+            fontSize: "12px",
             highlightScheme: "blue",
             hideSearch: false,
             hideGo: false,
@@ -29,7 +22,7 @@ export const APP = {
         templateHTML: null
     }
 };
-export const StateManager = {
+const StateManager = {
     state: APP.state,
     listeners: {},
     get(path) {
@@ -40,24 +33,18 @@ export const StateManager = {
                 this.state
             );
     },
-    set(path, value) {
-		const keys = path.split(".");
-		const last = keys.pop();
+    set(path,value) {
 
-		const target = keys.reduce(
-			(obj, key) => {
-				if (!obj[key]) {
-					obj[key] = {};
-				}
-
-				return obj[key];
-			},
-			this.state
-		);
-
-		target[last] = value;
-		this.notify(path, value);
-	},
+        const keys = path.split(".");
+        const last = keys.pop();
+        const target =
+            keys.reduce(
+                (obj,key)=>obj[key],
+                this.state
+            );
+        target[last] = value;
+        this.notify(path,value);
+    },
 	hydrate(){
     const settings =
         AppStorage.settings.load();
@@ -86,9 +73,10 @@ export const StateManager = {
         );
     }
 };
-
-
-export const UIState = {
+// ==============================
+// TEMPLATE CACHE
+// ==============================
+const UIState = {
     key: "settings",
     state: null,
     init(){
@@ -103,8 +91,6 @@ export const UIState = {
 			...savedSettings
 		};
 
-		
-
 		Object.entries(StateManager.state.ui).forEach(
 			([key, value]) => {
 				this.applySideEffects(key, value);
@@ -112,34 +98,13 @@ export const UIState = {
 		);
 	},
     get(key) {
-		return StateManager.get(`ui.${key}`);
-	},
+        return StateManager.state.ui?.[key];
+    },
     set(key, value) {
-		StateManager.set(`ui.${key}`, value);
-
-		AppStorage.set(this.key, StateManager.get("ui"));
-		this.applySideEffects(key, value);
-	},
-	getFontSize() {
-		const size = Number(this.get("fontSize"));
-		return Number.isFinite(size) ? size : 18;
-	},
-
-	setFontSize(size) {
-		const cleanSize = Number(size);
-		this.set(
-			"fontSize",
-			Number.isFinite(cleanSize) ? cleanSize : 18
-		);
-	},
-
-	getHighlightScheme() {
-		return this.get("highlightScheme") ?? "blue";
-	},
-
-	setHighlightScheme(scheme) {
-		this.set("highlightScheme", scheme);
-	},
+        StateManager.state.ui[key] = value;
+        AppStorage.set(this.key, StateManager.state.ui);
+        this.applySideEffects(key, value);
+    },
     applySideEffects(key, value) {
 		switch (key) {
 
@@ -163,7 +128,7 @@ export const UIState = {
 		}
 	}
 };
-export const AppState = {
+const AppState = {
     getCurrentFile(frameId){
         return StateManager.get(
             `app.currentFiles.${frameId}`
@@ -190,3 +155,4 @@ export const AppState = {
         );
     }
 };
+
